@@ -1,6 +1,6 @@
 <?php
 
-Route::group(array('before' => 'handleRequests|handleMainApp'), function() {
+Route::group(array('before' => 'facebook-app.handleRequests|facebook-app.handleMainApp'), function () {
     $mainAppRoutes = function () {
         Route::any('/', function () {
             return "generic route for main app.";
