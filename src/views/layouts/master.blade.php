@@ -11,8 +11,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta http-equiv="cleartype" content="on">
 
-    {{ HTML::style('//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css') }}
-    {{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css') }}
     {{ HTML::style('css/main.css') }}
     @yield('styles')
 
@@ -24,22 +22,13 @@
 <body>
 <div id="fb-root"></div>
 
-@yield('header')
+<div class="wrapper" id="wrapper">
 
-<div class="container">
-    <div class="content">
-        @yield('nav')
-        <div class="row">
-            <div class="col-sm-12">
-                @yield('content')
-            </div>
-        </div>
-        <div class="row footer">
-            @yield('footer')
-        </div>
-    </div>
-</div>
-<!-- /container -->
+    @include('facebook-app::_partials._header')
+
+    @include('facebook-app::_partials._content')
+
+    @include('facebook-app::_partials._footer')
 
 <script>
     var appConfig = {
@@ -48,9 +37,8 @@
         channelUrl: "{{ $channelUrl }}"
     };
 </script>
-@yield('scripts')
-<script data-main="packages/euw/facebook-app/js/main"
-        src="{{ URL::asset('//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js') }}"></script>
+
+{{ HTML::script('js/bundle.js') }}
 
 </body>
 </html>
