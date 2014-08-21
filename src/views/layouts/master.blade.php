@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" ng-app>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" ng-app="myApp">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -19,7 +19,7 @@
     {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js') }}
     <![endif]-->
 </head>
-<body>
+<body ng-controller="AppController">
 <div id="fb-root"></div>
 
 <div class="wrapper" id="wrapper">
