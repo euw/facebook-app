@@ -10,8 +10,7 @@
     "require": {
         "php": ">=5.3.0",
         "illuminate/support": "4.2.*",
-        "facebook/php-sdk": "3.2.*",
-        "euw/multi-tenancy": "dev-master"
+        "facebook/php-sdk": "3.2.*"
     },
     "autoload": {
         "psr-0": {
