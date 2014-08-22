@@ -13,12 +13,6 @@
         "facebook/php-sdk": "3.2.*",
         "euw/multi-tenancy": "dev-master"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:euw/multi-tenancy.git"
-        }
-    ],
     "autoload": {
         "psr-0": {
             "Euw\\FacebookApp": "src/"
