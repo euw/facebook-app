@@ -132,7 +132,12 @@ Route::filter('facebook-app.auth', function () {
             $user = null;
         }
     } else {
-        $loginUrl = $facebook->getLoginUrl($params);
-        return '<script>top.location.href="' . $loginUrl . '"</script>';
+        if ($_REQUEST['error_reason'] == 'user_denied') {
+            dd('please allow ... ');
+        } else {
+            $loginUrl = $facebook->getLoginUrl($params);
+            return '<script>top.location.href="' . $loginUrl . '"</script>';
+        }
+
     }
 });

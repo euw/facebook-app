@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" ng-app="myApp">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" ng-app>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -12,7 +12,6 @@
     <meta http-equiv="cleartype" content="on">
 
     {{ HTML::style('css/main.css') }}
-    @yield('styles')
 
     {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.dev.js') }}
     <!--[if lt IE 9]>
@@ -29,6 +28,8 @@
     @include('facebook-app::_partials._content')
 
     @include('facebook-app::_partials._footer')
+
+</div>
 
 <script>
     var appConfig = {
