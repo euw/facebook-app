@@ -1,5 +1,8 @@
 <?php
 
+use Euw\FacebookApp\Exceptions\UserHasDeniedAuthenticationException;
+use Euw\FacebookApp\Exceptions\UserHasNotLikedPageException;
+
 App::before(function ($request) {
     header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
 });
@@ -94,9 +97,9 @@ Route::filter('facebook-app.like', function() {
 
         if ( $user ) {
             if ( userIsFanOfPage($tenant->fb_page_id) ) {
-                dd("fan");
+//                dd("fan");
             } else {
-                dd("not fan");
+                throw new UserHasNotLikedPageException('not fan');
             }
         } else {
 //            dd("not authed yet");
@@ -105,7 +108,7 @@ Route::filter('facebook-app.like', function() {
     } else {
         if (isset($signedRequest['page']) && !$signedRequest['page']['liked']) {
 
-            dd('not fan in page tab');
+            throw new UserHasNotLikedPageException('not fan in page tab');
         }
     }
 
@@ -132,12 +135,11 @@ Route::filter('facebook-app.auth', function () {
             $user = null;
         }
     } else {
-//        if ($_REQUEST['error_reason'] == 'user_denied') {
-//            dd('please allow ... ');
-//        } else {
+        if (Request::get('error_reason') == 'user_denied') {
+            throw new UserHasDeniedAuthenticationException;
+        } else {
             $loginUrl = $facebook->getLoginUrl($params);
             return '<script>top.location.href="' . $loginUrl . '"</script>';
-//        }
-
+        }
     }
 });
