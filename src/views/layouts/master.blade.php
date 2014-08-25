@@ -31,14 +31,6 @@
 
 </div>
 
-<script>
-    var appConfig = {
-        appId: "{{ $appId }}",
-        pageId: "{{ $pageId }}",
-        channelUrl: "{{ $channelUrl }}"
-    };
-</script>
-
 {{ HTML::script('js/bundle.js') }}
 
 </body>
