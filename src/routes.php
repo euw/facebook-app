@@ -3,7 +3,8 @@
 Route::group(array('before' => 'facebook-app.handleRequests|facebook-app.handleMainApp'), function () {
     $mainAppRoutes = function () {
         Route::any('/', function () {
-            return "generic route for main app.";
+            throw new \Euw\FacebookApp\Exceptions\GenericAppException("generic route for main app.");
+//            return "generic route for main app.";
         });
     };
 
