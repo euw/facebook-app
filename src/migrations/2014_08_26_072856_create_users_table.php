@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRequestsTable extends Migration {
+class CreateUsersTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,10 +12,13 @@ class CreateRequestsTable extends Migration {
      */
     public function up()
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('request_id');
+
+            $table->text('terms_of_use');
+            $table->text('privacy_policy');
+            $table->string('share_message', 255);
 
             $table->integer('tenant_id')->unsigned()->nullable();
             $table->foreign('tenant_id')
@@ -33,7 +36,7 @@ class CreateRequestsTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('requests');
+        Schema::drop('users');
     }
 
 }
