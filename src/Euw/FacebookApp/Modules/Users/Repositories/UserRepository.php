@@ -1,4 +1,4 @@
-<?php namespace Euw\Facebook\Modules\Users\Repositories;
+<?php namespace Euw\FacebookApp\Modules\Users\Repositories;
 
 interface UserRepository
 {
