@@ -22,6 +22,9 @@ class FacebookAppServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+        $this->app->register('Euw\MultiTenancy\MultiTenancyServiceProvider');
+        $this->app->register('Laracasts\Utilities\UtilitiesServiceProvider');
+
         App::singleton('Facebook', function () {
             $config = array(
                 'appId'              => Config::get('facebook-app::appId'),
