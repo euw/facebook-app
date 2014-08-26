@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration {
             $table->engine = 'InnoDB';
             $table->increments('id');
 
-            $table->string('fb_id')->unique();
+            $table->string('fb_id');
             $table->string('first_name')->nullable();;
             $table->string('last_name')->nullable();;
             $table->string('username', 255)->unique()->nullable();
