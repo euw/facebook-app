@@ -1,10 +1,10 @@
-<?php namespace Euw\FacebookApp\Modules\Users\Repositories;
+<?php namespace Euw\FacebookApp\Modules\Requests\Repositories;
 
 use Euw\MultiTenancy\Contexts\Context;
 use Illuminate\Database\Eloquent\Model;
 use Euw\MultiTenancy\Modules\Tenants\Repositories\TenantRepository;
 
-class EloquentUserRepository extends TenantRepository implements UserRepository
+class EloquentRequestRepository extends TenantRepository implements RequestRepository
 {
 
     /**
