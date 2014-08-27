@@ -42,9 +42,8 @@ Route::filter('facebook-app.handleRequests', function ()
     if ( $request ) {
         $subdomain = getSubdomainForRequest($request);
 
-        // Todo: use // instead of specifying protocol when we support wildcard subdomains
+        $url = '//' . $subdomain . '.' . Config::get('app.domain'); // . Request::server('SCRIPT_NAME');
 
-        $url = 'http://' . $subdomain . '.' . Config::get('app.domain'); // . Request::server('SCRIPT_NAME');
         return Redirect::to($url);
     }
 });
@@ -64,8 +63,8 @@ Route::filter('facebook-app.handleMainApp', function () {
 
             if ( $tenant ) {
                 $subdomain = $tenant->subdomain;
-                // Todo: use // instead of specifying protocol when we support wildcard subdomains
-                $url = 'http://' . $subdomain . '.' . Config::get('app.domain');// . Request::server('SCRIPT_NAME');
+                $url = '//' . $subdomain . '.' . Config::get('app.domain');// . Request::server('SCRIPT_NAME');
+
                 return Redirect::to($url);
             }
         }
