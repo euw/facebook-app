@@ -134,11 +134,11 @@ Route::filter('facebook-app.auth', function () {
             $user = null;
         }
     } else {
-        if (Request::get('error_reason') == 'user_denied') {
-            throw new UserHasDeniedAuthenticationException;
-        } else {
-            $loginUrl = $facebook->getLoginUrl($params);
-            return '<script>top.location.href="' . $loginUrl . '"</script>';
-        }
+//        if (Request::get('error_reason') == 'user_denied') {
+//            throw new UserHasDeniedAuthenticationException;
+//        } else {
+//            $loginUrl = $facebook->getLoginUrl($params);
+//            return '<script>top.location.href="' . $loginUrl . '"</script>';
+//        }
     }
 });
