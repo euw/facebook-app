@@ -16,6 +16,7 @@ class Invitation extends \Eloquent
         'sender_id',
         'recipient_id',
         'accepted',
+        'request_id',
         'tenant_id'
     ];
 

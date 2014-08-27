@@ -28,6 +28,11 @@ class CreateInvitationsTable extends Migration {
 
             $table->boolean('accepted')->default(0);
 
+            $table->integer('request_id')->unsigned()->nullable();
+            $table->foreign('request_id')
+                ->references('id')->on('requests')
+                ->onDelete('cascade');
+
             $table->integer('tenant_id')->unsigned()->nullable();
             $table->foreign('tenant_id')
                 ->references('id')->on('tenants')
