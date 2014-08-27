@@ -10,11 +10,14 @@ class BaseController extends Controller
 {
 
     protected $tenant;
+    protected $facebook;
 
     public function __construct()
     {
         $context = App::make('Euw\MultiTenancy\Contexts\Context');
         $this->tenant = $context->getOrThrowException();
+
+        $this->facebook = App::make('Facebook');
 
         JavaScript::put([
             'appId'       => Config::get('facebook-app::appId'),
