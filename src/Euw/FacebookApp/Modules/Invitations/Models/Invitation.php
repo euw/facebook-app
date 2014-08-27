@@ -15,7 +15,8 @@ class Invitation extends \Eloquent
     protected $fillable = [
         'sender_id',
         'recipient_id',
-        'accepted'
+        'accepted',
+        'tenant_id'
     ];
 
 
