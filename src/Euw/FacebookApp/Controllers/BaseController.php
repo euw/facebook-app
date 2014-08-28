@@ -3,12 +3,12 @@
 use App;
 use Config;
 use Controller;
+use Euw\FacebookApp\Modules\Texts\Repositories\TextRepository;
 use Laracasts\Utilities\JavaScript\Facades\JavaScript;
 use View;
 
 class BaseController extends Controller
 {
-
     protected $tenant;
     protected $facebook;
 

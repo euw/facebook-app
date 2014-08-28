@@ -2,6 +2,7 @@
 
 use Euw\FacebookApp\Exceptions\UserHasDeniedAuthenticationException;
 use Euw\FacebookApp\Exceptions\UserHasNotLikedPageException;
+use Euw\FacebookApp\Exceptions\UserIsNotAuthenticatedException;
 
 App::before(function ($request) {
     header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
@@ -12,7 +13,8 @@ function getLatestRequestId()
     $latestRequest = null;
 
     $requestIds = Request::get("request_ids");
-    if (!empty($requestIds)) {
+
+    if ( ! empty($requestIds)) {
         // request_ids is a comma separated string with the latest request id at the end.
         // we need to grab that last request id!
         $requests = explode(',', $requestIds);
@@ -25,13 +27,19 @@ function getLatestRequestId()
 function getLatestRequest()
 {
     $latestRequestId = getLatestRequestId();
-    $request = Euw\FacebookApp\Modules\Requests\Models\Request::whereRequestId($latestRequestId)->first();
+    $request = null;
+
+    if ($latestRequestId) {
+        $request = Euw\FacebookApp\Modules\Requests\Models\Request::whereRequestId($latestRequestId)->first();
+    }
+
     return $request;
 }
 
 function getSubdomainForRequest($request)
 {
     $subdomain = $request->tenant->subdomain;
+
     return $subdomain;
 }
 
@@ -134,11 +142,12 @@ Route::filter('facebook-app.auth', function () {
             $user = null;
         }
     } else {
+//        throw new UserIsNotAuthenticatedException;
 //        if (Request::get('error_reason') == 'user_denied') {
 //            throw new UserHasDeniedAuthenticationException;
 //        } else {
-//            $loginUrl = $facebook->getLoginUrl($params);
-//            return '<script>top.location.href="' . $loginUrl . '"</script>';
+////            $loginUrl = $facebook->getLoginUrl($params);
+////            return '<script>top.location.href="' . $loginUrl . '"</script>';
 //        }
     }
 });
