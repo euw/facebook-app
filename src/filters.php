@@ -43,11 +43,10 @@ function getSubdomainForRequest($request)
     return $subdomain;
 }
 
-Route::filter('facebook-app.handleRequests', function ()
-{
+Route::filter('facebook-app.handleRequests', function () {
     $request = getLatestRequest();
 
-    if ( $request ) {
+    if ($request) {
         $subdomain = getSubdomainForRequest($request);
 
         $url = '//' . $subdomain . '.' . Config::get('app.domain'); // . Request::server('SCRIPT_NAME');
@@ -57,21 +56,25 @@ Route::filter('facebook-app.handleRequests', function ()
 });
 
 Route::filter('facebook-app.handleMainApp', function () {
-
     $facebook = App::make('Facebook');
 
     $signedRequest = $facebook->getSignedRequest();
 
-    if (!is_null($signedRequest) && isset($signedRequest['page'])) {
+    if ( ! is_null($signedRequest) && isset($signedRequest['page'])) {
 
         if (isset($signedRequest['page'])) {
             $pageId = $signedRequest['page']['id'];
 
             $tenant = Euw\MultiTenancy\Modules\Tenants\Models\Tenant::where('fb_page_id', '=', $pageId)->firstOrFail();
 
-            if ( $tenant ) {
+            if ($tenant) {
                 $subdomain = $tenant->subdomain;
-                $url = '//' . $subdomain . '.' . Config::get('app.domain');// . Request::server('SCRIPT_NAME');
+
+                $url = Request::secure() ? 'https://' : 'http://';
+                $url = 'http://';
+                $url .= $subdomain . '.';
+                $url .= Config::get('app.domain');
+                $url .= Request::server('SCRIPT_NAME');
 
                 return Redirect::to($url);
             }
@@ -91,19 +94,19 @@ function userIsFanOfPage($fbPageId)
     return (count($fql_result) > 0);
 }
 
-Route::filter('facebook-app.like', function() {
+Route::filter('facebook-app.like', function () {
     $facebook = App::make('Facebook');
     $signedRequest = $facebook->getSignedRequest();
 
-    if ( is_null($signedRequest) ) {
+    if (is_null($signedRequest)) {
 
         $context = App::make('Euw\MultiTenancy\Contexts\Context');
         $tenant = $context->getOrThrowException();
 
         $user = $facebook->getUser();
 
-        if ( $user ) {
-            if ( userIsFanOfPage($tenant->fb_page_id) ) {
+        if ($user) {
+            if (userIsFanOfPage($tenant->fb_page_id)) {
 //                dd("fan");
             } else {
                 throw new UserHasNotLikedPageException('not fan');
@@ -113,13 +116,10 @@ Route::filter('facebook-app.like', function() {
         }
 
     } else {
-        if (isset($signedRequest['page']) && !$signedRequest['page']['liked']) {
-
+        if (isset($signedRequest['page']) && ! $signedRequest['page']['liked']) {
             throw new UserHasNotLikedPageException('not fan in page tab');
         }
     }
-
-
 });
 
 
