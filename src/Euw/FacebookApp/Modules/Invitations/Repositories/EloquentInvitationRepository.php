@@ -90,9 +90,4 @@ class EloquentInvitationRepository extends TenantRepository implements Invitatio
         return $this->getManyByThroughColumn($key, $value, $with);
     }
 
-    public function create(array $with = array())
-    {
-        return $this->createThroughColumn($with);
-    }
-
 }

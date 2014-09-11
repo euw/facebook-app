@@ -90,9 +90,4 @@ class EloquentRequestRepository extends TenantRepository implements RequestRepos
         return $this->getManyByThroughColumn($key, $value, $with);
     }
 
-    public function create(array $with = array())
-    {
-        return $this->createThroughColumn($with);
-    }
-
 }
