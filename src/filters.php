@@ -1,5 +1,11 @@
 <?php
 
+use Euw\FacebookApp\Exceptions\UserHasDeniedAuthenticationException;
+use Euw\FacebookApp\Exceptions\UserHasNotLikedPageException;
+use Euw\FacebookApp\Exceptions\UserIsNotAuthenticatedException;
+use Euw\MultiTenancy\Exceptions\TenantNotFoundException;
+use Euw\MultiTenancy\Modules\Tenants\Models\Tenant;
+
 App::before(function ($request) {
     header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
 });
@@ -9,7 +15,8 @@ function getLatestRequestId()
     $latestRequest = null;
 
     $requestIds = Request::get("request_ids");
-    if (!empty($requestIds)) {
+
+    if ( ! empty($requestIds)) {
         // request_ids is a comma separated string with the latest request id at the end.
         // we need to grab that last request id!
         $requests = explode(',', $requestIds);
@@ -22,47 +29,58 @@ function getLatestRequestId()
 function getLatestRequest()
 {
     $latestRequestId = getLatestRequestId();
-    $request = Euw\FacebookApp\Modules\Requests\Models\Request::whereRequestId($latestRequestId)->first();
+    $request = null;
+
+    if ($latestRequestId) {
+        $request = Euw\FacebookApp\Modules\Requests\Models\Request::whereRequestId($latestRequestId)->first();
+    }
+
     return $request;
 }
 
 function getSubdomainForRequest($request)
 {
     $subdomain = $request->tenant->subdomain;
+
     return $subdomain;
 }
 
-Route::filter('facebook-app.handleRequests', function ()
-{
+Route::filter('facebook-app.handleRequests', function () {
     $request = getLatestRequest();
 
-    if ( $request ) {
+    if ($request) {
         $subdomain = getSubdomainForRequest($request);
 
-        // Todo: use // instead of specifying protocol when we support wildcard subdomains
+        $url = '//' . $subdomain . '.' . Config::get('app.domain') . Request::server('SCRIPT_NAME');
 
-        $url = 'http://' . $subdomain . '.' . Config::get('app.domain'); // . Request::server('SCRIPT_NAME');
         return Redirect::to($url);
     }
 });
 
 Route::filter('facebook-app.handleMainApp', function () {
-
     $facebook = App::make('Facebook');
 
     $signedRequest = $facebook->getSignedRequest();
 
-    if (!is_null($signedRequest) && isset($signedRequest['page'])) {
+    if ( ! is_null($signedRequest) && isset($signedRequest['page'])) {
 
         if (isset($signedRequest['page'])) {
             $pageId = $signedRequest['page']['id'];
 
-            $tenant = Euw\MultiTenancy\Modules\Tenants\Models\Tenant::where('fb_page_id', '=', $pageId)->firstOrFail();
+            $tenant = Tenant::where('fb_page_id', '=', $pageId)->first();
 
-            if ( $tenant ) {
+            if (!$tenant) {
+                throw new TenantNotFoundException;
+            }
+
+            if ($tenant) {
                 $subdomain = $tenant->subdomain;
-                // Todo: use // instead of specifying protocol when we support wildcard subdomains
-                $url = 'http://' . $subdomain . '.' . Config::get('app.domain');// . Request::server('SCRIPT_NAME');
+
+                $url = Request::secure() ? 'https://' : 'http://';
+                $url .= $subdomain . '.';
+                $url .= Config::get('app.domain');
+                $url .= Request::server('SCRIPT_NAME');
+
                 return Redirect::to($url);
             }
         }
@@ -81,35 +99,32 @@ function userIsFanOfPage($fbPageId)
     return (count($fql_result) > 0);
 }
 
-Route::filter('facebook-app.like', function() {
+Route::filter('facebook-app.like', function () {
     $facebook = App::make('Facebook');
     $signedRequest = $facebook->getSignedRequest();
 
-    if ( is_null($signedRequest) ) {
+    if (is_null($signedRequest)) {
 
         $context = App::make('Euw\MultiTenancy\Contexts\Context');
         $tenant = $context->getOrThrowException();
 
         $user = $facebook->getUser();
 
-        if ( $user ) {
-            if ( userIsFanOfPage($tenant->fb_page_id) ) {
-                dd("fan");
+        if ($user) {
+            if (userIsFanOfPage($tenant->fb_page_id)) {
+//                dd("fan");
             } else {
-                dd("not fan");
+                throw new UserHasNotLikedPageException('not fan');
             }
         } else {
 //            dd("not authed yet");
         }
 
     } else {
-        if (isset($signedRequest['page']) && !$signedRequest['page']['liked']) {
-
-            dd('not fan in page tab');
+        if (isset($signedRequest['page']) && ! $signedRequest['page']['liked']) {
+            throw new UserHasNotLikedPageException('not fan in page tab');
         }
     }
-
-
 });
 
 
@@ -132,7 +147,6 @@ Route::filter('facebook-app.auth', function () {
             $user = null;
         }
     } else {
-        $loginUrl = $facebook->getLoginUrl($params);
-        return '<script>top.location.href="' . $loginUrl . '"</script>';
+        throw new UserIsNotAuthenticatedException;
     }
 });

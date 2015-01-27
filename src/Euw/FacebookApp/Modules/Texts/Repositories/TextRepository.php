@@ -1,4 +1,4 @@
-<?php namespace Euw\Facebook\Modules\Texts\Repositories;
+<?php namespace Euw\FacebookApp\Modules\Texts\Repositories;
 
 interface TextRepository
 {

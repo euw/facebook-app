@@ -20,10 +20,10 @@ class CreateTextsTable extends Migration {
             $table->text('privacy_policy');
             $table->string('share_message', 255);
 
-            $table->integer('tenant_id');
-//            $table->foreign('tenant_id')
-//                ->references('id')->on('tenants')
-//                ->onDelete('cascade');
+            $table->integer('tenant_id')->unsigned()->nullable();
+            $table->foreign('tenant_id')
+                ->references('id')->on('tenants')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });

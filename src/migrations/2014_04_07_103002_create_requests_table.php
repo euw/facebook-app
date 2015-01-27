@@ -18,9 +18,9 @@ class CreateRequestsTable extends Migration {
             $table->string('request_id');
 
             $table->integer('tenant_id')->unsigned()->nullable();
-//            $table->foreign('tenant_id')
-//                ->references('id')->on('tenants')
-//                ->onDelete('cascade');
+            $table->foreign('tenant_id')
+                ->references('id')->on('tenants')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });
