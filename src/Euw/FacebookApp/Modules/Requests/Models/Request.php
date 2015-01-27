@@ -20,4 +20,9 @@ class Request extends \Eloquent
         return $this->belongsTo('Euw\MultiTenancy\Modules\Tenants\Models\Tenant');
     }
 
+    public function invitations()
+    {
+        return $this->hasMany('Euw\\FacebookApp\\Modules\\Invitations\\Models\\Invitation');
+    }
+
 }

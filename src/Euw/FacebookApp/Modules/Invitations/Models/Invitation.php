@@ -20,6 +20,9 @@ class Invitation extends \Eloquent
         'tenant_id'
     ];
 
-
+    public function sender()
+    {
+        return $this->belongsTo('Euw\\FacebookApp\\Modules\\Users\\Models\\User');
+    }
 
 }

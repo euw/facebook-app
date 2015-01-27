@@ -9,5 +9,10 @@ Route::group(array('before' => 'facebook-app.handleRequests|facebook-app.handleM
     };
 
     Route::group(array('domain' => 'www.' . Config::get('app.domain')), $mainAppRoutes );
+    Route::group(array('domain' => 'apps.' . Config::get('app.domain')), $mainAppRoutes );
     Route::group(array('domain' => Config::get('app.domain')), $mainAppRoutes );
+
+    Route::get('auth_denied', ['as' => 'auth_denied'], function() {
+       throw new \Euw\FacebookApp\Exceptions\UserHasDeniedAuthenticationException();
+    });
 });

@@ -3,6 +3,8 @@
 use Euw\FacebookApp\Exceptions\UserHasDeniedAuthenticationException;
 use Euw\FacebookApp\Exceptions\UserHasNotLikedPageException;
 use Euw\FacebookApp\Exceptions\UserIsNotAuthenticatedException;
+use Euw\MultiTenancy\Exceptions\TenantNotFoundException;
+use Euw\MultiTenancy\Modules\Tenants\Models\Tenant;
 
 App::before(function ($request) {
     header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
@@ -49,7 +51,7 @@ Route::filter('facebook-app.handleRequests', function () {
     if ($request) {
         $subdomain = getSubdomainForRequest($request);
 
-        $url = '//' . $subdomain . '.' . Config::get('app.domain'); // . Request::server('SCRIPT_NAME');
+        $url = '//' . $subdomain . '.' . Config::get('app.domain') . Request::server('SCRIPT_NAME');
 
         return Redirect::to($url);
     }
@@ -65,13 +67,16 @@ Route::filter('facebook-app.handleMainApp', function () {
         if (isset($signedRequest['page'])) {
             $pageId = $signedRequest['page']['id'];
 
-            $tenant = Euw\MultiTenancy\Modules\Tenants\Models\Tenant::where('fb_page_id', '=', $pageId)->firstOrFail();
+            $tenant = Tenant::where('fb_page_id', '=', $pageId)->first();
+
+            if (!$tenant) {
+                throw new TenantNotFoundException;
+            }
 
             if ($tenant) {
                 $subdomain = $tenant->subdomain;
 
                 $url = Request::secure() ? 'https://' : 'http://';
-                $url = 'http://';
                 $url .= $subdomain . '.';
                 $url .= Config::get('app.domain');
                 $url .= Request::server('SCRIPT_NAME');
@@ -142,12 +147,6 @@ Route::filter('facebook-app.auth', function () {
             $user = null;
         }
     } else {
-//        throw new UserIsNotAuthenticatedException;
-//        if (Request::get('error_reason') == 'user_denied') {
-//            throw new UserHasDeniedAuthenticationException;
-//        } else {
-////            $loginUrl = $facebook->getLoginUrl($params);
-////            return '<script>top.location.href="' . $loginUrl . '"</script>';
-//        }
+        throw new UserIsNotAuthenticatedException;
     }
 });

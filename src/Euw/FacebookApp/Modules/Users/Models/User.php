@@ -22,6 +22,25 @@ class User extends \Eloquent
         'email'
     ];
 
+    public function answers()
+    {
+        return $this->hasMany('Euw\\Quiz\\Modules\\UserAnswer');
+    }
+
+    public function points()
+    {
+        $points = 0;
+
+        foreach($this->answers as $userAnswer) {
+            if ((int)$userAnswer->answer->is_correct) {
+                $points += 3;
+            } else {
+                $points += 1;
+            }
+        }
+
+        return $points;
+    }
 
 
 }
