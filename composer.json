@@ -10,7 +10,7 @@
     "require": {
         "php": ">=5.3.0",
         "illuminate/support": "4.2.*",
-        "facebook/php-sdk-v4": "4.*",
+        "facebook/php-sdk": "3.2.*",
         "laracasts/utilities": "1.0.1"
     },
     "autoload": {
