@@ -25,10 +25,14 @@ class FacebookAppServiceProvider extends ServiceProvider {
         $this->app->register('Euw\MultiTenancy\MultiTenancyServiceProvider');
         $this->app->register('Laracasts\Utilities\UtilitiesServiceProvider');
 
-        App::singleton('Facebook', function () {
+		$appId = Config::get( 'facebook-app::appId' );
+		$appSecret = Config::get( 'facebook-app::appSecret' );
+		$channelUrl = Config::get( 'facebook-app::channelUrl' );
+
+        App::singleton('Facebook', function () use ($appId, $appSecret) {
             $config = array(
-                'appId'              => Config::get('facebook-app::appId'),
-                'secret'             => Config::get('facebook-app::appSecret'),
+                'appId'              => $appId,
+                'secret'             => $appSecret,
                 'fileUpload'         => false, // optional
                 'allowSignedRequest' => true, // optional, but should be set to false for non-canvas apps
             );
@@ -36,10 +40,10 @@ class FacebookAppServiceProvider extends ServiceProvider {
             return new Facebook($config);
         });
 
-        View::composer('facebook-app::layouts.master', function ($view) {
-            $view->with('appId', Config::get('facebook-app::appId'));
+        View::composer('facebook-app::layouts.master', function ($view) use ($appId, $channelUrl) {
+            $view->with('appId', $appId);
             $view->with('pageId', '');
-            $view->with('channelUrl', Config::get('facebook-app::channelUrl'));
+            $view->with('channelUrl', $channelUrl);
         });
 
         $this->app->register('Euw\FacebookApp\Modules\Providers\ModuleProvider');
